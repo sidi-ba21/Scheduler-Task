@@ -1,0 +1,65 @@
+// scheduler component 
+import { Component, OnInit } from '@angular/core';
+import { DataService } from './data.service';
+import { DayPilot } from 'daypilot-pro-angular';
+
+@Component({
+  selector: 'scheduler-component',
+  // ... template et styles ...
+})
+export class SchedulerComponent implements OnInit {
+
+  resources: DayPilot.ResourceData[] = [];
+  events: DayPilot.EventData[] = [];
+
+  constructor(private dataService: DataService) { }
+
+  ngOnInit(): void {
+    // Récupérer les utilisateurs
+    this.dataService.getUsers().subscribe(users => {
+      // Créer des ressources à partir des utilisateurs
+      this.resources = users.map(user => ({
+        name: user.username,
+        id: user.id.toString()
+      }));
+    });
+
+    // Récupérer les événements
+    this.dataService.getEvents().subscribe(events => {
+      // Mettre à jour les événements
+      this.events = events.map(event => ({
+        id: event.id.toString(),
+        resource: event.user_id.toString(),
+        start: event.start,
+        end: event.end,
+        text: event.title,
+        tags: {
+          backColor: event.backColor,
+          description: event.description
+        }
+      }));
+    });
+  }
+}
+
+// data service 
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+
+  constructor(private http: HttpClient) { }
+
+  getUsers(): Observable<any[]> {
+    return this.http.get<any[]>('http://localhost:8080/get-users');
+  }
+
+  getEvents(): Observable<any[]> {
+    return this.http.get<any[]>('http://localhost:8080/get-events');
+  }
+}
