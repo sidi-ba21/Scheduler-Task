@@ -1,13 +1,9 @@
 <header>
-    <h1>My Scheduler App</h1>
-    <nav>
-      <ul>
-        <li><a routerLink="/scheduler">Scheduler</a></li>
-        <!-- Add more navigation links if needed -->
-      </ul>
-    </nav>
-  </header>
-  <main>
-    <router-outlet></router-outlet>
-  </main>
-  
+  <h1>My Scheduler App</h1>
+  <nav>
+    <button (click)="savePage()">Save Page</button>
+  </nav>
+</header>
+<main>
+  <router-outlet></router-outlet>
+</main>

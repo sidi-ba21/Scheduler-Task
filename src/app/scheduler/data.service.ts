@@ -34,8 +34,8 @@ export class DataService {
     {
       id: '1',
       resource: 'T1',
-      start: '2023-09-03T12:00:00',
-      end: '2023-09-08T15:00:00',
+      start: '2023-10-03T12:00:00',
+      end: '2023-10-08T15:00:00',
       text: 'Reservation 1',
       tags: {
         backColor: '#e69138',
@@ -45,8 +45,8 @@ export class DataService {
     {
       id: '2',
       resource: 'T3',
-      start: '2023-09-03T11:00:00',
-      end: '2023-09-15T14:00:00',
+      start: '2023-10-03T11:00:00',
+      end: '2023-10-15T14:00:00',
       text: 'Reservation 2',
       tags: {
         backColor: '#6aa84f',
@@ -56,8 +56,8 @@ export class DataService {
     {
       id: '3',
       resource: 'T5',
-      start: '2023-09-11T12:00:00',
-      end: '2023-09-17T14:00:00',
+      start: '2023-10-11T12:00:00',
+      end: '2023-10-17T14:00:00',
       text: 'Reservation 3',
       tags: {
         backColor: '#3c78d8',

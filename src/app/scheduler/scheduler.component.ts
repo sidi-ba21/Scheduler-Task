@@ -1,12 +1,20 @@
-import { OnInit, Component, ViewChild } from '@angular/core';
+import { OnInit, Component, ViewChild, ElementRef } from '@angular/core';
 import { DayPilot, DayPilotSchedulerComponent } from 'daypilot-pro-angular';
 import { DataService } from './data.service';
+import { PdfExportService } from './pdfExport.service';
+import saveAs from 'file-saver';
 import ModalClosedArgs = DayPilot.ModalClosedArgs;
 
 @Component({
   selector: 'scheduler-component',
   template: `
+  <br><br>
+    <div class="toolbar">
+    <button (click)="exportToPdf()">Export to PDF</button>
+    </div>
+    <div #schedulerWrapper>
     <daypilot-scheduler [config]="config" [events]="events" #scheduler></daypilot-scheduler>
+    </div>
     <div *ngIf="selectedEvent.text" class="event-details">
       <h2> task: {{ selectedEvent.text }}</h2>
       <p> color: <span [style.background]="selectedEvent.tags.backColor">{{ selectedEvent.tags.backColor }}</span></p>
@@ -27,6 +35,8 @@ import ModalClosedArgs = DayPilot.ModalClosedArgs;
   styles: [``]
 })
 export class SchedulerComponent implements OnInit {
+
+  @ViewChild('schedulerWrapper', { static: false }) schedulerWrapper: ElementRef;
 
   @ViewChild('scheduler')
   scheduler: DayPilotSchedulerComponent;
@@ -106,7 +116,7 @@ export class SchedulerComponent implements OnInit {
     treeEnabled: true,
   };
 
-  constructor(private ds: DataService) {
+  constructor(private ds: DataService, private pdfExportService: PdfExportService) {
   }
 
   ngOnInit(): void {
@@ -141,5 +151,9 @@ export class SchedulerComponent implements OnInit {
     this.showEventForm = false;
   }
 
+  exportToPdf(): void {
+    const blob = this.pdfExportService.exportAsPdf(this.scheduler);
+    saveAs(blob, 'scheduler.pdf');
+  }
 }
 
