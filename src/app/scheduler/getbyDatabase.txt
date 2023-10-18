@@ -158,3 +158,22 @@ export class VotreComposantComponent {
   padding: 10px;
   border-radius: 5px;
 }
+
+
+// pos
+// Écoutez l'événement de clic de la souris sur votre élément DayPilot
+daypilotScheduler.onTimeRangeSelected = function(args) {
+    var event = args.domEvent;
+    
+    // Récupérez la position de la souris à l'intérieur de votre élément DayPilot
+    var offsetX = event.offsetX || (event.pageX - event.target.offsetLeft);
+    var offsetY = event.offsetY || (event.pageY - event.target.offsetTop);
+    
+    // Ajoutez la position de votre élément DayPilot à la position de la souris relative à DayPilot
+    var absoluteX = args.left + offsetX;
+    var absoluteY = args.top + offsetY;
+    
+    // Maintenant, absoluteX et absoluteY contiennent les coordonnées de la souris sur la page
+    console.log("Position de la souris sur la page - X: " + absoluteX + ", Y: " + absoluteY);
+};
+
