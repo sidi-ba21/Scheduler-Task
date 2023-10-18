@@ -63,3 +63,28 @@ export class DataService {
     return this.http.get<any[]>('http://localhost:8080/get-events');
   }
 }
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-votre-composant',
+  templateUrl: './votre-composant.component.html',
+  styleUrls: ['./votre-composant.component.css']
+})
+export class VotreComposantComponent {
+
+  afficherTag(event: MouseEvent): void {
+    const target = event.target as HTMLSelectElement;
+    const positionClic = {
+      x: event.clientX,
+      y: event.clientY
+    };
+
+    const optionIndex = target.selectedIndex;
+    const selectedOption = target.options[optionIndex].text;
+
+    console.log(`Option sélectionnée: ${selectedOption}`);
+    console.log(`Position du clic - X: ${positionClic.x}, Y: ${positionClic.y}`);
+    // Vous pouvez maintenant utiliser la valeur de l'option et la position du clic comme vous le souhaitez.
+  }
+}
