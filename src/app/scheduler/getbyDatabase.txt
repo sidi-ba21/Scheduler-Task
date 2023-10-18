@@ -92,19 +92,25 @@ export class VotreComposantComponent {
 
 
 // html
-<select (click)="afficherTag($event)">
-  <option value="beginner">Beginner</option>
-  <option value="amateur">Amateur</option>
-  <option value="pro">Pro</option>
-  <option value="star">Star</option>
-</select>
-
-<div *ngIf="tagVisible" [style.left.px]="positionClic.x" [style.top.px]="positionClic.y" class="tag">
-  {{ selectedTag }}
+<div (click)="afficherSelect($event)" class="click-area">
+  Click here to select an option
 </div>
 
-// ts
+<div *ngIf="selectVisible" [style.left.px]="positionClic.x" [style.top.px]="positionClic.y" class="select-container">
+  <select (change)="onOptionSelected($event)">
+    <option value="beginner">Beginner</option>
+    <option value="amateur">Amateur</option>
+    <option value="pro">Pro</option>
+    <option value="star">Star</option>
+  </select>
+</div>
 
+<div *ngIf="selectedOption">
+  You selected: {{ selectedOption }}
+</div>
+
+
+// ts
 import { Component } from '@angular/core';
 
 @Component({
@@ -114,30 +120,41 @@ import { Component } from '@angular/core';
 })
 export class VotreComposantComponent {
 
-  tagVisible: boolean = false;
+  selectVisible: boolean = false;
   positionClic: { x: number, y: number } = { x: 0, y: 0 };
-  selectedTag: string = '';
+  selectedOption: string = '';
 
-  afficherTag(event: MouseEvent): void {
-    const target = event.target as HTMLSelectElement;
-    const optionIndex = target.selectedIndex;
-    this.selectedTag = target.options[optionIndex].text;
-
+  afficherSelect(event: MouseEvent): void {
     this.positionClic = {
       x: event.clientX,
       y: event.clientY
     };
 
-    this.tagVisible = true;
+    this.selectVisible = true;
+  }
+
+  onOptionSelected(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.selectedOption = target.value;
+    this.selectVisible = false;
   }
 }
 
+
+
 // css
 
-.tag {
-  position: absolute;
+.click-area {
   background-color: #f1f1f1;
-  padding: 10px;
+  padding: 20px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.select-container {
+  position: absolute;
+  background-color: #fff;
   border: 1px solid #ccc;
+  padding: 10px;
   border-radius: 5px;
 }
