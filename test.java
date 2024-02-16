@@ -40,3 +40,50 @@ public class Main {
         }
     }
 }
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+public class CurlToJava {
+    public static void main(String[] args) {
+        try {
+            // Create a custom SSL context that trusts all certificates
+            SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, new TrustManager[] { new X509TrustManager() {
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+
+                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                }
+
+                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                }
+            } }, new java.security.SecureRandom());
+
+            // Set the custom SSL context to the HttpClient
+            HttpClient client = HttpClient.newBuilder()
+                    .sslContext(sslContext)
+                    .build();
+
+            // Create and send the request
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://example.com"))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("Response code: " + response.statusCode());
+            System.out.println("Response body: " + response.body());
+        } catch (NoSuchAlgorithmException | KeyManagementException | IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
