@@ -20,3 +20,37 @@ sorted_persons = sorted(persons, key=lambda x: (x.name, x.age))
 
 for person in sorted_persons:
     print(person)
+
+
+###
+private getCssContent(): string {
+    const stylesheets = this.elementRef.nativeElement.ownerDocument.styleSheets;
+    let cssContent = '';
+
+    // Function to check if a CSS rule comes from a Bootstrap stylesheet
+    const isBootstrapRule = (rule: CSSStyleRule) => {
+        return rule.parentStyleSheet && rule.parentStyleSheet.href && rule.parentStyleSheet.href.includes('bootstrap.min.css');
+    };
+
+    for (let i = 0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if (stylesheet.href) {
+            // Fetch external CSS content if available
+            // You may need to handle CORS if stylesheet is from a different domain
+            // Example: https://stackoverflow.com/questions/33592570/cross-domain-css-link-gets-blocked-by-cors-policy-how-to-bypass-this
+        } else {
+            // Inline CSS content
+            const rules = stylesheet.cssRules;
+            for (let j = 0; j < rules.length; j++) {
+                const rule = rules[j];
+                // Include the rule if it's not from a Bootstrap stylesheet
+                if (!isBootstrapRule(rule)) {
+                    cssContent += rule.cssText;
+                }
+            }
+        }
+    }
+    return cssContent;
+}
+
+###
