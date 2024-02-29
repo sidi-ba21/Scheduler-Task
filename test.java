@@ -87,3 +87,33 @@ public class CurlToJava {
         }
     }
 }
+
+import java.io.IOException;
+
+public class Main {
+    public static void main(String[] args) {
+        try {
+            // Commande avec des arguments
+            String[] command = {"commande", "arg1", "arg2"};
+
+            // Si les arguments contiennent des espaces, vous pouvez les définir comme suit
+            // Dans cet exemple, arg1 et arg2 contiennent des espaces
+            String arg1 = "toto@toto.com, tata@tata.com";
+            String arg2 = "test send mail";
+
+            // Créer le process builder avec la commande et ses arguments
+            ProcessBuilder pb = new ProcessBuilder(command[0], arg1, arg2);
+
+            // Exécuter la commande
+            Process process = pb.start();
+
+            // Attendre que le processus se termine
+            int exitCode = process.waitFor();
+
+            // Afficher le code de sortie du processus
+            System.out.println("Code de sortie : " + exitCode);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
