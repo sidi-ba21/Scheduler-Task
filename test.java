@@ -117,3 +117,91 @@ public class Main {
         }
     }
 }
+
+import java.util.*;
+
+class Employee {
+    private String firstName;
+    private String lastName;
+    private Date dob;
+    private String city;
+
+    // Constructor
+    public Employee(String firstName, String lastName, Date dob, String city) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dob = dob;
+        this.city = city;
+    }
+
+    // Getters and setters
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return Objects.equals(firstName, employee.firstName) &&
+                Objects.equals(lastName, employee.lastName) &&
+                Objects.equals(dob, employee.dob) &&
+                Objects.equals(city, employee.city);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, dob, city);
+    }
+}
+
+public class RemoveDuplicateEmployees {
+    public static void main(String[] args) {
+        List<Employee> employees = new ArrayList<>();
+        // Add sample employees (replace with your actual employee data)
+        employees.add(new Employee("John", "Doe", new Date(90, 5, 15), "New York"));
+        employees.add(new Employee("Jane", "Doe", new Date(95, 8, 25), "Los Angeles"));
+        employees.add(new Employee("John", "Smith", new Date(85, 3, 10), "Chicago"));
+        employees.add(new Employee("John", "Doe", new Date(90, 5, 15), "New York")); // Duplicate
+        employees.add(new Employee("Jane", "Doe", new Date(95, 8, 25), "Los Angeles")); // Duplicate
+
+        // Remove duplicates
+        Set<Employee> uniqueEmployees = new HashSet<>(employees);
+        employees.clear();
+        employees.addAll(uniqueEmployees);
+
+        // Print unique employees
+        for (Employee emp : employees) {
+            System.out.println(emp.getFirstName() + " " + emp.getLastName() + ", " + emp.getDob() + ", " + emp.getCity());
+        }
+    }
+}
