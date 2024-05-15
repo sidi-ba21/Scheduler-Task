@@ -205,3 +205,13 @@ public class RemoveDuplicateEmployees {
         }
     }
 }
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import java.util.List;
+
+public interface ActiviteRepository extends JpaRepository<Activite, Long> {
+
+    @Query("SELECT a.employe, SUM(EXTRACT(HOUR FROM (a.heureFin - a.heureDebut))) as totalHeures FROM Activite a GROUP BY a.employe")
+    List<Object[]> findTotalHeuresByEmploye();
+}
