@@ -221,17 +221,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JsonParserExample {
 
     public static void main(String[] args) {
-        String json = "[[6, 1717], [7, 896]]";
+        String json = "[[6, 1717, \"Paris\"], [7, 896, \"Lille\"]]";
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            List<List<Integer>> rawData = mapper.readValue(json, new TypeReference<List<List<Integer>>>() {});
+            List<List<Object>> rawData = mapper.readValue(json, new TypeReference<List<List<Object>>>() {});
             List<UserWork> userWorks = rawData.stream()
-                                              .map(data -> new UserWork(data.get(0), data.get(1)))
+                                              .map(data -> new UserWork((Integer) data.get(0), (Integer) data.get(1), (String) data.get(2)))
                                               .collect(Collectors.toList());
 
             userWorks.forEach(System.out::println);
