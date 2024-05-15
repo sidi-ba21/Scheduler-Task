@@ -215,3 +215,28 @@ public interface ActiviteRepository extends JpaRepository<Activite, Long> {
     @Query("SELECT a.employe, SUM(EXTRACT(HOUR FROM (a.heureFin - a.heureDebut))) as totalHeures FROM Activite a GROUP BY a.employe")
     List<Object[]> findTotalHeuresByEmploye();
 }
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.util.List;
+
+public class JsonParserExample {
+
+    public static void main(String[] args) {
+        String json = "[[6, 1717], [7, 896]]";
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            List<List<Integer>> rawData = mapper.readValue(json, new TypeReference<List<List<Integer>>>() {});
+            List<UserWork> userWorks = rawData.stream()
+                                              .map(data -> new UserWork(data.get(0), data.get(1)))
+                                              .collect(Collectors.toList());
+
+            userWorks.forEach(System.out::println);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
