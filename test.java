@@ -241,3 +241,12 @@ public class JsonParserExample {
         }
     }
 }
+SELECT
+  EXTRACT(DAY FROM interval_column) * 1440 +  -- 1440 minutes in a day
+  EXTRACT(HOUR FROM interval_column) * 60 +    -- 60 minutes in an hour
+  EXTRACT(MINUTE FROM interval_column) +       -- Directly adding minutes
+  EXTRACT(SECOND FROM interval_column) / 60    -- Converting seconds to minutes
+AS total_minutes
+FROM
+  your_table;
+
