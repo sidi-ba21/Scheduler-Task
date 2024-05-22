@@ -250,3 +250,20 @@ AS total_minutes
 FROM
   your_table;
 
+SELECT
+  CASE
+    WHEN total_minutes > total_charges THEN total_charges
+    ELSE total_minutes
+  END AS adjusted_total_minutes
+FROM (
+  SELECT
+    SUM(
+      EXTRACT(DAY FROM (datefin - datedebut)) * 1440 +  -- converting days to minutes
+      EXTRACT(HOUR FROM (datefin - datedebut)) * 60 +   -- converting hours to minutes
+      EXTRACT(MINUTE FROM (datefin - datedebut)) +      -- directly adding minutes
+      EXTRACT(SECOND FROM (datefin - datedebut)) / 60   -- converting seconds to minutes
+    ) AS total_minutes,
+    SUM(charges) AS total_charges
+  FROM
+    your_table
+) subquery;
