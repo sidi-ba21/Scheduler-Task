@@ -1,56 +1,61 @@
-class Person:
-    def __init__(self, name, age, city):
-        self.name = name
-        self.age = int(age)
-        self.city = city
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+import ssl
+import argparse
+import os
+from datetime import datetime
 
-    def __repr__(self):
-        return f"Person(name={self.name}, age={self.age}, city={self.city})"
+# Set up argument parser
+parser = argparse.ArgumentParser(description="Send an email with attachment")
+parser.add_argument('--to', type=str, required=True, help="Comma-separated list of recipient email addresses")
+parser.add_argument('--subject', type=str, required=True, help="Subject of the email")
+parser.add_argument('--html_content', type=str, required=True, help="Path to the HTML file containing the body of the email")
 
-response = "<tr><td>John</td><td>19</td><td>Paris</td></tr><tr><td>Ali</td><td>24</td><td>Milan</td></tr>"
+args = parser.parse_args()
 
-persons = []
-for row in response.split("<tr>"):
-    if row.strip():
-        name, age, city = [cell.strip("</td>") for cell in row.split("<td>") if cell.strip()]
-        persons.append(Person(name, age, city))
+# Example variables
+subject = args.subject
+sender_email = "your_email@example.com"
+recipient_email = args.to
+html_file_path = args.html_content
+current_date = datetime.now().strftime("%Y-%m-%d")
+path_to_file = f"/tmp/cractivity_{current_date}.xlsx"
+smtp_server = "smtp.example.com"
+smtp_port = 587
+sender_password = "your_password"
 
-# Trier la liste des objets Person par nom puis par âge
-sorted_persons = sorted(persons, key=lambda x: (x.name, x.age))
+# Read the HTML content from the file
+with open(html_file_path, 'r') as file:
+    html_content = file.read()
 
-for person in sorted_persons:
-    print(person)
+# Create the email
+message = MIMEMultipart()
+message['Subject'] = subject
+message['From'] = sender_email
+message['To'] = recipient_email
+body_part = MIMEText(html_content, "html")
+message.attach(body_part)
 
+# Attach the file if it exists
+if os.path.exists(path_to_file):
+    with open(path_to_file, 'rb') as file:
+        part = MIMEApplication(file.read(), Name=f"cractivity_{current_date}.xlsx")
+        part['Content-Disposition'] = f'attachment; filename="cractivity_{current_date}.xlsx"'
+        message.attach(part)
+else:
+    print(f"The file {path_to_file} does not exist")
 
-###
-private getCssContent(): string {
-    const stylesheets = this.elementRef.nativeElement.ownerDocument.styleSheets;
-    let cssContent = '';
+# Convert the recipient email string to a list
+recipient_list = recipient_email.split(',')
 
-    // Function to check if a CSS rule comes from a Bootstrap stylesheet
-    const isBootstrapRule = (rule: CSSStyleRule) => {
-        return rule.parentStyleSheet && rule.parentStyleSheet.href && rule.parentStyleSheet.href.includes('bootstrap.min.css');
-    };
-
-    for (let i = 0; i < stylesheets.length; i++) {
-        const stylesheet = stylesheets[i];
-        if (stylesheet.href) {
-            // Fetch external CSS content if available
-            // You may need to handle CORS if stylesheet is from a different domain
-            // Example: https://stackoverflow.com/questions/33592570/cross-domain-css-link-gets-blocked-by-cors-policy-how-to-bypass-this
-        } else {
-            // Inline CSS content
-            const rules = stylesheet.cssRules;
-            for (let j = 0; j < rules.length; j++) {
-                const rule = rules[j];
-                // Include the rule if it's not from a Bootstrap stylesheet
-                if (!isBootstrapRule(rule)) {
-                    cssContent += rule.cssText;
-                }
-            }
-        }
-    }
-    return cssContent;
-}
-
-###
+# Send the email
+context = ssl.create_default_context()
+with smtplib.SMTP(smtp_server, smtp_port) as server:
+    server.ehlo()
+    server.starttls(context=context)
+    server.ehlo()
+    server.login(sender_email, sender_password)
+    server.sendmail(sender_email, recipient_list, message.as_string())
+    print("Email sent to:", recipient_list)
